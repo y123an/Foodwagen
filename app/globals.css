@@ -3,6 +3,9 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --primary: #FF9A0E;
+  --secondary: #F65900;
+  --primary-light: #FFBA26;
 }
 
 @theme inline {
@@ -10,6 +13,9 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-source-sans: var(--font-source-sans);
+  --color-primary: var(--primary);
+  --color-secondary: var(--secondary);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -22,5 +28,5 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-source-sans),   Arial, Helvetica, sans-serif;
 }
