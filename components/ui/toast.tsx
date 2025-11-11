@@ -3,16 +3,7 @@
 import { useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { IoClose, IoCheckmarkCircle, IoAlertCircle, IoWarning, IoInformationCircle } from "react-icons/io5";
-
-export type ToastType = "success" | "error" | "warning" | "info";
-
-export interface ToastProps {
-  id: string;
-  type: ToastType;
-  message: string;
-  duration?: number;
-  onClose: (id: string) => void;
-}
+import type { ToastProps, ToastType } from "@/lib/types";
 
 const toastStyles: Record<ToastType, { bg: string; border: string; icon: typeof IoCheckmarkCircle }> = {
   success: {

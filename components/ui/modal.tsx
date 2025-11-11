@@ -2,32 +2,7 @@
 
 import React, { useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
-
-export type ModalSize = "sm" | "md" | "lg" | "xl";
-
-export type ModalProps = {
-  open: boolean;
-  onClose: () => void;
-  title?: React.ReactNode;
-  description?: React.ReactNode;
-  children?: React.ReactNode;
-  footer?: React.ReactNode; // Actions area
-  size?: ModalSize;
-  hideClose?: boolean;
-  className?: string;
-  /**
-   * Focus this element when the modal opens. If not provided, we focus the dialog container.
-   */
-  initialFocusRef?: React.RefObject<HTMLElement> | null;
-  /**
-   * Close when clicking outside the dialog panel
-   */
-  closeOnOverlayClick?: boolean;
-  /**
-   * Close when pressing the Escape key
-   */
-  closeOnEsc?: boolean;
-};
+import type { ModalProps, ModalSize } from "@/lib/types";
 
 const sizeMap: Record<ModalSize, string> = {
   sm: "max-w-md",

@@ -1,18 +1,17 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
 import { FaSpinner } from "react-icons/fa";
-
-type Size = "sm" | "default" | "lg" | "icon";
+import type { ButtonSize } from "@/lib/types";
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  size?: Size;
+  size?: ButtonSize;
   className?: string;
   loading?: boolean;
   loadingText?: string;
 }
 
-const sizeClasses: Record<Size, string> = {
+const sizeClasses: Record<ButtonSize, string> = {
   sm: "h-8 rounded-md gap-1.5 px-3",
   default: "h-9 px-4 py-2",
   lg: "h-10 rounded-md px-6",

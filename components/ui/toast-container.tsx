@@ -1,11 +1,7 @@
 "use client";
 
-import Toast, { ToastProps } from "./toast";
-
-interface ToastContainerProps {
-  toasts: Omit<ToastProps, "onClose">[];
-  onClose: (id: string) => void;
-}
+import Toast from "./toast";
+import type { ToastContainerProps } from "@/lib/types";
 
 /**
  * Container component for managing multiple toast notifications

@@ -4,27 +4,7 @@ import React, { useMemo, useState, useEffect } from "react";
 import Modal from "./modal";
 import Input from "./input";
 import Button from "./button";
-
-export type FoodStatus = "Open Now" | "Closed";
-
-export type FoodFormValues = {
-  name: string;
-  rating?: number | "";
-  imageUrl?: string;
-  price?: string;
-  restaurantName?: string;
-  logo?: string;
-  status?: FoodStatus;
-};
-
-export type FoodFormModalProps = {
-  open: boolean;
-  mode: "create" | "edit";
-  initialData?: FoodFormValues | null;
-  onClose: () => void;
-  onSubmit: (values: Required<FoodFormValues>) => Promise<void> | void;
-  submitting?: boolean;
-};
+import type { FoodFormModalProps, FoodFormValues, FoodStatus } from "@/lib/types";
 
 const fieldWrap = "mb-4";
 const errorText = "mt-1 text-xs text-error";

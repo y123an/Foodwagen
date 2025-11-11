@@ -3,14 +3,7 @@
 import React from "react";
 import Modal from "./modal";
 import Button from "./button";
-
-export type FoodDeleteModalProps = {
-  open: boolean;
-  onClose: () => void;
-  onConfirm: () => Promise<void> | void;
-  confirming?: boolean;
-  foodName?: string;
-};
+import type { FoodDeleteModalProps } from "@/lib/types";
 
 /**
  * Food Delete Modal Component
