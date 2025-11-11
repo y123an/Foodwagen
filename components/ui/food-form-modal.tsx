@@ -129,9 +129,9 @@ export default function FoodFormModal({
     }
   };
 
-  const actionText = mode === "edit" ? "Update Food" : "Add Food";
-  const loadingText = mode === "edit" ? "Updating Food..." : "Adding Food...";
-  const title = mode === "edit" ? "Edit Food" : "Add Food";
+  const actionText = mode === "edit" ? "Update Meal" : "Add";
+  const loadingText = mode === "edit" ? "Updating Meal..." : "Adding Meal...";
+  const title = mode === "edit" ? "Edit Meal" : "Add Meal";
 
   return (
     <Modal

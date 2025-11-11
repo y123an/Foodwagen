@@ -4,8 +4,8 @@ import React, { useState } from "react";
 import { Logo } from "@/assets";
 import Image from "next/image";
 import Button from "@/components/ui/button"; 
-import FoodFormModal, { FoodFormValues } from "@/components/ui/food-form-modal";
-import { useCreateFoodMutation } from "@/lib";
+import FoodFormModal from "@/components/ui/food-form-modal";
+import { FoodFormValues, useCreateFoodMutation } from "@/lib";
 import { useToast } from "@/lib/context/ToastContext";
 
 /**
@@ -48,7 +48,7 @@ export default function RestaurantNavbar() {
           </div>
           <div>
             <Button className="px-5" onClick={() => setOpenCreate(true)}>
-              Add Food
+              Add Meal
             </Button>
           </div>
         </div>

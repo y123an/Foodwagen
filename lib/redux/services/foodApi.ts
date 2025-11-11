@@ -34,6 +34,27 @@ export const foodApi = createApi({
           : [{ type: "Food", id: "LIST" }],
     }),
 
+    searchFoods: builder.query<Food[], string>({
+      query: (searchParam) => `/Food?name=${searchParam}`,
+      transformResponse: (response: unknown[]) => {
+        return response.map((item) => {
+          try {
+            return foodSchema.parse(item);
+          } catch (error) {
+            console.warn("Invalid food item:", item, error);
+            return item as Food;
+          }
+        });
+      },
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map(({ id }) => ({ type: "Food" as const, id })),
+              { type: "Food", id: "SEARCH" },
+            ]
+          : [{ type: "Food", id: "SEARCH" }],
+    }),
+
     getFoodById: builder.query<Food, string>({
       query: (id) => `/Food/${id}`,
       transformResponse: (response: unknown) => {
@@ -83,6 +104,7 @@ export const foodApi = createApi({
 
 export const {
   useGetFoodsQuery,
+  useSearchFoodsQuery,
   useGetFoodByIdQuery,
   useCreateFoodMutation,
   useUpdateFoodMutation,

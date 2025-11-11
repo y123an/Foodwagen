@@ -17,7 +17,7 @@ const RestaurantFooter: React.FC = () => {
     <footer className="bg-footer-bg text-gray-300" aria-labelledby="site-footer">
       <h2 id="site-footer" className="sr-only">Site footer</h2>
       <div className="mx-auto md:max-w-7xl px-4 md:px-0 py-16">
-        <div className="grid grid-cols-1 gap-y-12 lg:grid-cols-4 lg:gap-8">
+        <div className="grid grid-cols-1 gap-y-12 lg:grid-cols-6 lg:gap-8">
           <div className="grid grid-cols-2 gap-8 sm:grid-cols-3 lg:col-span-3">
             <div>
               <h3 className={headingBase}>Company</h3>
@@ -46,8 +46,10 @@ const RestaurantFooter: React.FC = () => {
               </ul>
             </div>
           </div>
+          <div className="lg:cols-span-1">
 
-          <div className="lg:pl-10">
+          </div>
+          <div className="lg:col-span-2">
             <p className="text-white font-semibold mb-5">FOLLOW US</p>
             <div className="flex items-center gap-4 mb-8 text-gray-100">
               <a aria-label="Instagram" href="#" className="w-9 h-9 rounded-full bg-footer-icon-bg flex items-center justify-center hover:bg-footer-icon-hover">

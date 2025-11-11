@@ -12,7 +12,7 @@ const sizeMap: Record<ModalSize, string> = {
 };
 
 const overlayBase =
-  "fixed inset-0 z-50 bg-black/40 backdrop-blur-[2px] transition-opacity";
+  "fixed inset-0 z-50 bg-white/20 backdrop-blur-[2px] transition-opacity";
 
 const panelBase =
   "w-full rounded-2xl bg-white shadow-xl outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#FF312F]";
@@ -67,22 +67,14 @@ export default function Modal({
     return () => window.removeEventListener("keydown", onKey);
   }, [open, onClose, closeOnEsc]);
 
-  // Close when clicking outside
-  const onOverlayClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!closeOnOverlayClick) return;
-    if (e.target === overlayRef.current) onClose();
-  };
-
   if (!open) return null;
 
   return (
     <div
       ref={overlayRef}
       className={overlayBase}
-      onMouseDown={onOverlayClick}
-      aria-hidden={!open}
     >
-      <div className="flex min-h-full items-start justify-center pt-10">
+      <div className="flex min-h-full items-start justify-center mt-20">
         <div
           role="dialog"
           aria-modal="true"
@@ -90,7 +82,7 @@ export default function Modal({
           aria-describedby={description ? "modal-desc" : undefined}
           ref={panelRef}
           tabIndex={-1}
-          className={cn(panelBase, sizeMap[size], "mx-auto p-6", className)}
+          className={cn(panelBase, sizeMap[size], "mx-auto p-6 border border-primary/10", className)}
         >
           {(title || !hideClose) && (
             <div className="mb-4 flex items-center justify-center p-3">

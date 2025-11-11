@@ -1,12 +1,24 @@
+"use client";
+
+import { useState } from "react";
 import RestaurantHero from "@/components/RestaurantHero";
-import RestaurantNavbar from "@/components/RestaurantNavbar";
 import RestaurantFeature from "@/components/RestaurantFeature";
 
 function page() {
+  const [searchQuery, setSearchQuery] = useState<string>("");
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+  };
+
+  const handleClearSearch = () => {
+    setSearchQuery("");
+  };
+
   return (
     <>
-      <RestaurantHero />
-      <RestaurantFeature />
+      <RestaurantHero onSearch={handleSearch} onClearSearch={handleClearSearch} />
+      <RestaurantFeature searchQuery={searchQuery} onClearSearch={handleClearSearch} />
     </>
   );
 }

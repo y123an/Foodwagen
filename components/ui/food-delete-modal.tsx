@@ -31,11 +31,11 @@ export default function FoodDeleteModal({
     <Modal
       open={open}
       onClose={onClose}
-      title="Delete Food"
+      title="Delete Meal"
       size="md"
       footer={
         <>
-          <Button onClick={handleConfirm} loading={confirming ?? isConfirming} loadingText="Deleting Food...">
+          <Button onClick={handleConfirm} loading={confirming ?? isConfirming} loadingText="Deleting Meal...">
             Yes
           </Button>
           <button
@@ -49,7 +49,7 @@ export default function FoodDeleteModal({
       }
     >
       <p className="text-sm text-gray-600">
-        Are you sure you want to delete{foodName ? ` the food "${foodName}"` : " this food"}? Actions cannot be reversed.
+        Are you sure you want to delete{foodName ? ` the meal "${foodName}"` : " this meal"}? Actions cannot be reversed.
       </p>
     </Modal>
   );

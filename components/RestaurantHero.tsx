@@ -6,13 +6,44 @@ import Button from "@/components/ui/button";
 import Image from "next/image";
 import { HeroImage, DeliveryIcon, PickupIcon } from "@/assets";
 import { cn } from "@/lib/utils";
+import { IoSearch, IoClose } from "react-icons/io5";
+
+interface RestaurantHeroProps {
+  onSearch?: (searchTerm: string) => void;
+  onClearSearch?: () => void;
+}
 
 /**
  * Restaurant Hero Component
  * Displays the main hero section with food search functionality and delivery/pickup mode toggle
  */
-export default function RestaurantHero() {
+export default function RestaurantHero({ onSearch, onClearSearch }: RestaurantHeroProps) {
   const [mode, setMode] = useState<"delivery" | "pickup">("delivery");
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const handleSearch = () => {
+    if (searchTerm.trim() && onSearch) {
+      onSearch(searchTerm.trim());
+      // Scroll to features section
+      const featuresSection = document.getElementById("featured-foods-section");
+      if (featuresSection) {
+        featuresSection.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+  };
+
+  const handleClearSearch = () => {
+    setSearchTerm("");
+    if (onClearSearch) {
+      onClearSearch();
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleSearch();
+    }
+  };
 
   return (
     <section className="bg-primary py-16 md:flex md:items-end justify-center h-[70vh]">
@@ -47,12 +78,31 @@ export default function RestaurantHero() {
               ))}
             </div>
             <div className="flex items-center gap-2">
-              <Input
-                placeholder="What do you like to eat today?"
-                className="flex-1 border-none bg-gray-100"
-              />
-              <Button className="bg-secondary hover:bg-secondary/80 text-white">
-                Find Food
+              <div className="relative flex-1">
+                <IoSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-secondary w-5 h-5" />
+                <Input
+                  placeholder="What do you like to eat today?"
+                  className="border-none bg-gray-100 pl-10 py-5 pr-10"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onKeyDown={handleKeyPress}
+                />
+                {searchTerm && (
+                  <button
+                    onClick={handleClearSearch}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
+                    aria-label="Clear search"
+                  >
+                    <IoClose className="w-5 h-5" />
+                  </button>
+                )}
+              </div>
+              <Button 
+                className="bg-secondary hover:bg-secondary/80 text-white p-5"
+                onClick={handleSearch}
+              >
+                <IoSearch className="w-4 h-4" />
+                Find Meal
               </Button>
             </div>
           </div>
@@ -60,8 +110,8 @@ export default function RestaurantHero() {
         <div className="">
           <Image
             src={HeroImage}
-            alt="Food hero"
-            className="relative top-16 w-[300px] h-[300px] md:w-[400px] md:h-[400px]"
+            alt="Food hero image"
+            className="relative top-16 w-[300px] h-[300px] md:w-[400px] md:h-[400px] food-hero-image-shadow"
           />
         </div>
       </div>

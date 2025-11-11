@@ -7,6 +7,7 @@ export { useAppDispatch, useAppSelector } from "./redux/hooks";
 // Export RTK Query hooks
 export {
   useGetFoodsQuery,
+  useSearchFoodsQuery,
   useGetFoodByIdQuery,
   useCreateFoodMutation,
   useUpdateFoodMutation,
