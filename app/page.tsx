@@ -1,19 +1,19 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback, memo } from "react";
 import RestaurantHero from "@/components/RestaurantHero";
 import RestaurantFeature from "@/components/RestaurantFeature";
 
-function HomePage() {
+const HomePage = memo(function HomePage() {
   const [searchQuery, setSearchQuery] = useState<string>("");
 
-  const handleSearch = (query: string) => {
+  const handleSearch = useCallback((query: string) => {
     setSearchQuery(query);
-  };
+  }, []);
 
-  const handleClearSearch = () => {
+  const handleClearSearch = useCallback(() => {
     setSearchQuery("");
-  };
+  }, []);
 
   return (
     <>
@@ -21,6 +21,6 @@ function HomePage() {
       <RestaurantFeature searchQuery={searchQuery} onClearSearch={handleClearSearch} />
     </>
   );
-}
+});
 
 export default HomePage;

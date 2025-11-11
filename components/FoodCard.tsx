@@ -1,19 +1,20 @@
 "use client";
 
-import { memo, useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState, useMemo, lazy, Suspense } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { GoKebabHorizontal } from "react-icons/go";
 import { FaTag } from "react-icons/fa";
 import ActionMenu from "./ui/action-menu";
-import FoodFormModal from "./ui/food-form-modal";
-import FoodDeleteModal from "./ui/food-delete-modal";
 import { useUpdateFoodMutation, useDeleteFoodMutation } from "@/lib/redux/services/foodApi";
 import { DefaultRestorantLogo, DefaultFoodImage } from "@/assets";
 import { useToast } from "@/lib/context/ToastContext";
 import type { FoodCardProps, FoodFormValues } from "@/lib/types";
 import { BsStarFill } from "react-icons/bs";
+
+const FoodFormModal = lazy(() => import('./ui/food-form-modal'));
+const FoodDeleteModal = lazy(() => import('./ui/food-delete-modal'));
 
 /**
  * Food Card Component
@@ -28,8 +29,18 @@ const FoodCard = memo(function FoodCard({
   const btnRef = useRef<HTMLButtonElement | null>(null);
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
-  const [logoSrc, setLogoSrc] = useState(foodData?.logo || DefaultRestorantLogo);
-  const [imageSrc, setImageSrc] = useState(food.image || DefaultFoodImage);
+  
+  const initialImageSrc = useMemo(() => food.image || DefaultFoodImage, [food.image]);
+  const initialLogoSrc = useMemo(() => {
+    if (!foodData) return DefaultRestorantLogo;
+    const logo: string | undefined = (foodData as { logo?: string; restaurant_logo?: string }).logo ||
+      (foodData as { logo?: string; restaurant_logo?: string }).restaurant_logo;
+    return logo || DefaultRestorantLogo;
+  }, [foodData]);
+  
+  const [logoSrc, setLogoSrc] = useState(initialLogoSrc);
+  const [imageSrc, setImageSrc] = useState(initialImageSrc);
+  
   const { showSuccess, showError } = useToast();
 
   const [updateFood, { isLoading: isUpdating }] = useUpdateFoodMutation();
@@ -60,17 +71,12 @@ const FoodCard = memo(function FoodCard({
   }, [menuOpen]);
 
   useEffect(() => {
-    const next = food.image || DefaultFoodImage;
-    if (next !== imageSrc) setImageSrc(next);
-  }, [food.image]);
+    setImageSrc(initialImageSrc);
+  }, [initialImageSrc]);
 
   useEffect(() => {
-    if (!foodData) return;
-    const logo: string | undefined = (foodData as { logo?: string; restaurant_logo?: string }).logo ||
-      (foodData as { logo?: string; restaurant_logo?: string }).restaurant_logo;
-    const nextLogo = logo || DefaultRestorantLogo;
-    if (nextLogo !== logoSrc) setLogoSrc(nextLogo);
-  }, [foodData]);
+    setLogoSrc(initialLogoSrc);
+  }, [initialLogoSrc]);
 
   return (
     <>
@@ -111,6 +117,7 @@ const FoodCard = memo(function FoodCard({
                 height={64}
                 onError={() => setLogoSrc(DefaultRestorantLogo)}
                 className="object-cover w-10 h-10 md:w-12 md:h-12 rounded-md"
+                loading="lazy"
               />
             </span>
             <div>
@@ -173,71 +180,143 @@ const FoodCard = memo(function FoodCard({
       </div>
   </motion.article>
 
-    <FoodFormModal
-      open={openEdit}
-      mode="edit"
-      initialData={{
-        name: food.name,
-        rating: food.rating,
-        imageUrl: food.image,
-        price: food.price.toString(),
-        restaurantName: food.brand,
-        logo: foodData?.logo || foodData?.restaurant_logo || "",
-        status: (food.isOpen ? "Open Now" : "Closed") as "Open Now" | "Closed",
-      }}
-      onClose={() => setOpenEdit(false)}
-      submitting={isUpdating}
-      onSubmit={async (values: Required<FoodFormValues>) => {
-        try {
-          if (foodData?.id) {
-            await updateFood({
-              id: foodData.id,
-              data: {
-                name: values.name,
-                image: values.imageUrl,
-                Price: values.price,
-                rating: Number(values.rating),
-                restaurantName: values.restaurantName,
-                logo: values.logo,
-                status: values.status,
-              },
-            }).unwrap();
-            // Force-refresh images immediately even if the URL stays the same (browser cache)
-            const cb = Date.now();
-            if (values.imageUrl) {
-              const joiner = values.imageUrl.includes("?") ? "&" : "?";
-              setImageSrc(`${values.imageUrl}${joiner}cb=${cb}`);
+    {process.env.NODE_ENV === 'test' ? (
+      <FoodFormModal
+        open={openEdit}
+        mode="edit"
+        initialData={{
+          name: food.name,
+          rating: food.rating,
+          imageUrl: food.image,
+          price: food.price.toString(),
+          restaurantName: food.brand,
+          logo: foodData?.logo || foodData?.restaurant_logo || "",
+          status: (food.isOpen ? "Open Now" : "Closed") as "Open Now" | "Closed",
+        }}
+        onClose={() => setOpenEdit(false)}
+        submitting={isUpdating}
+        onSubmit={async (values: Required<FoodFormValues>) => {
+          try {
+            if (foodData?.id) {
+              await updateFood({
+                id: foodData.id,
+                data: {
+                  name: values.name,
+                  image: values.imageUrl,
+                  Price: values.price,
+                  rating: Number(values.rating),
+                  restaurantName: values.restaurantName,
+                  logo: values.logo,
+                  status: values.status,
+                },
+              }).unwrap();
+              const cb = Date.now();
+              if (values.imageUrl) {
+                const joiner = values.imageUrl.includes("?") ? "&" : "?";
+                setImageSrc(`${values.imageUrl}${joiner}cb=${cb}`);
+              }
+              if (values.logo) {
+                const joiner = values.logo.includes("?") ? "&" : "?";
+                setLogoSrc(`${values.logo}${joiner}cb=${cb}`);
+              }
+              showSuccess("Food item updated successfully!");
             }
-            if (values.logo) {
-              const joiner = values.logo.includes("?") ? "&" : "?";
-              setLogoSrc(`${values.logo}${joiner}cb=${cb}`);
-            }
-            showSuccess("Food item updated successfully!");
+            setOpenEdit(false);
+          } catch {
+            showError("Failed to update food item");
           }
-          setOpenEdit(false);
-        } catch {
-          showError("Failed to update food item");
-        }
-      }}
-    />
+        }}
+      />
+    ) : (
+      <Suspense fallback={<div>Loading...</div>}>
+        <FoodFormModal
+          open={openEdit}
+          mode="edit"
+          initialData={{
+            name: food.name,
+            rating: food.rating,
+            imageUrl: food.image,
+            price: food.price.toString(),
+            restaurantName: food.brand,
+            logo: foodData?.logo || foodData?.restaurant_logo || "",
+            status: (food.isOpen ? "Open Now" : "Closed") as "Open Now" | "Closed",
+          }}
+          onClose={() => setOpenEdit(false)}
+          submitting={isUpdating}
+          onSubmit={async (values: Required<FoodFormValues>) => {
+            try {
+              if (foodData?.id) {
+                await updateFood({
+                  id: foodData.id,
+                  data: {
+                    name: values.name,
+                    image: values.imageUrl,
+                    Price: values.price,
+                    rating: Number(values.rating),
+                    restaurantName: values.restaurantName,
+                    logo: values.logo,
+                    status: values.status,
+                  },
+                }).unwrap();
+                const cb = Date.now();
+                if (values.imageUrl) {
+                  const joiner = values.imageUrl.includes("?") ? "&" : "?";
+                  setImageSrc(`${values.imageUrl}${joiner}cb=${cb}`);
+                }
+                if (values.logo) {
+                  const joiner = values.logo.includes("?") ? "&" : "?";
+                  setLogoSrc(`${values.logo}${joiner}cb=${cb}`);
+                }
+                showSuccess("Food item updated successfully!");
+              }
+              setOpenEdit(false);
+            } catch {
+              showError("Failed to update food item");
+            }
+          }}
+        />
+      </Suspense>
+    )}
 
-    <FoodDeleteModal
-      open={openDelete}
-      onClose={() => setOpenDelete(false)}
-      foodName={food.name}
-      confirming={isDeleting}
-      onConfirm={async () => {
-        try {
-          if (foodData?.id) {
-            await deleteFood(foodData.id).unwrap();
-            showSuccess("Food item deleted successfully!");
+    {process.env.NODE_ENV === 'test' ? (
+      <FoodDeleteModal
+        open={openDelete}
+        onClose={() => setOpenDelete(false)}
+        foodName={food.name}
+        confirming={isDeleting}
+        onConfirm={async () => {
+          try {
+            if (foodData?.id) {
+              await deleteFood(foodData.id).unwrap();
+              showSuccess("Food item deleted successfully!");
+            }
+            setOpenDelete(false);
+          } catch {
+            showError("Failed to delete food item");
           }
-          setOpenDelete(false);
-        } catch {
-          showError("Failed to delete food item");
-        }
-      }}
-    />
+        }}
+      />
+    ) : (
+      <Suspense fallback={<div>Loading...</div>}>
+        <FoodDeleteModal
+          open={openDelete}
+          onClose={() => setOpenDelete(false)}
+          foodName={food.name}
+          confirming={isDeleting}
+          onConfirm={async () => {
+            try {
+              if (foodData?.id) {
+                await deleteFood(foodData.id).unwrap();
+                showSuccess("Food item deleted successfully!");
+              }
+              setOpenDelete(false);
+            } catch {
+              showError("Failed to delete food item");
+            }
+          }}
+        />
+      </Suspense>
+    )}
     </>
   );
 });

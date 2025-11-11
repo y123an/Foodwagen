@@ -51,55 +51,55 @@ const TestWrapper = ({ children }: { children: React.ReactNode }) => {
 };
 
 describe('FoodCard Component - Rendering Tests', () => {
-  it('should render the food card with correct food name', () => {
+  it('should render the food card with correct food name', async () => {
     render(
       <TestWrapper>
         <FoodCard food={mockFoodItem} foodData={mockFoodData} />
       </TestWrapper>
     );
 
-    const nameElement = screen.getByTestId('food-name');
+    const nameElement = await screen.findByTestId('food-name');
     expect(nameElement).toBeInTheDocument();
     expect(nameElement).toHaveTextContent('Delicious Burger');
   });
 
-  it('should render the food card with correct price', () => {
+  it('should render the food card with correct price', async () => {
     render(
       <TestWrapper>
         <FoodCard food={mockFoodItem} foodData={mockFoodData} />
       </TestWrapper>
     );
 
-    const priceElement = screen.getByTestId('food-price');
+    const priceElement = await screen.findByTestId('food-price');
     expect(priceElement).toBeInTheDocument();
     expect(priceElement).toHaveTextContent('$12.99');
   });
 
-  it('should render the food card with correct rating', () => {
+  it('should render the food card with correct rating', async () => {
     render(
       <TestWrapper>
         <FoodCard food={mockFoodItem} foodData={mockFoodData} />
       </TestWrapper>
     );
 
-    const ratingElement = screen.getByTestId('food-rating');
+    const ratingElement = await screen.findByTestId('food-rating');
     expect(ratingElement).toBeInTheDocument();
     expect(ratingElement).toHaveTextContent('4.5');
   });
 
-  it('should display "Open" status when restaurant is open', () => {
+  it('should display "Open" status when restaurant is open', async () => {
     render(
       <TestWrapper>
         <FoodCard food={mockFoodItem} foodData={mockFoodData} />
       </TestWrapper>
     );
 
-    const statusElement = screen.getByTestId('food-status');
+    const statusElement = await screen.findByTestId('food-status');
     expect(statusElement).toBeInTheDocument();
     expect(statusElement).toHaveTextContent('Open');
   });
 
-  it('should display "Closed" status when restaurant is closed', () => {
+  it('should display "Closed" status when restaurant is closed', async () => {
     const closedFood = { ...mockFoodItem, isOpen: false };
     render(
       <TestWrapper>
@@ -107,31 +107,31 @@ describe('FoodCard Component - Rendering Tests', () => {
       </TestWrapper>
     );
 
-    const statusElement = screen.getByTestId('food-status');
+    const statusElement = await screen.findByTestId('food-status');
     expect(statusElement).toBeInTheDocument();
     expect(statusElement).toHaveTextContent('Closed');
   });
 
-  it('should render food image with correct alt text', () => {
+  it('should render food image with correct alt text', async () => {
     render(
       <TestWrapper>
         <FoodCard food={mockFoodItem} foodData={mockFoodData} />
       </TestWrapper>
     );
 
-    const imageElement = screen.getByTestId('food-image');
+    const imageElement = await screen.findByTestId('food-image');
     expect(imageElement).toBeInTheDocument();
     expect(imageElement).toHaveAttribute('alt', 'Delicious Burger');
   });
 
-  it('should render restaurant logo', () => {
+  it('should render restaurant logo', async () => {
     render(
       <TestWrapper>
         <FoodCard food={mockFoodItem} foodData={mockFoodData} />
       </TestWrapper>
     );
 
-    const logoElement = screen.getByTestId('food-logo');
+    const logoElement = await screen.findByTestId('food-logo');
     expect(logoElement).toBeInTheDocument();
     expect(logoElement).toHaveAttribute('alt', 'Burger Place');
   });

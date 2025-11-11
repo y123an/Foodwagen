@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import Input from "@/components/ui/input";
 import Button from "@/components/ui/button";
@@ -22,29 +22,28 @@ export default function RestaurantHero({ onSearch, onClearSearch }: RestaurantHe
   const [mode, setMode] = useState<"delivery" | "pickup">("delivery");
   const [searchTerm, setSearchTerm] = useState("");
 
-  const handleSearch = () => {
+  const handleSearch = useCallback(() => {
     if (searchTerm.trim() && onSearch) {
       onSearch(searchTerm.trim());
-      // Scroll to features section
       const featuresSection = document.getElementById("featured-foods-section");
       if (featuresSection) {
         featuresSection.scrollIntoView({ behavior: "smooth", block: "start" });
       }
     }
-  };
+  }, [searchTerm, onSearch]);
 
-  const handleClearSearch = () => {
+  const handleClearSearch = useCallback(() => {
     setSearchTerm("");
     if (onClearSearch) {
       onClearSearch();
     }
-  };
+  }, [onClearSearch]);
 
-  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyPress = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       handleSearch();
     }
-  };
+  }, [handleSearch]);
 
   return (
     <motion.section

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo, useCallback } from "react";
 import Button from "@/components/ui/button";
 import FoodCard from "./FoodCard";
 import FoodCardSkeleton from "./FoodCardSkeleton";
@@ -34,38 +34,42 @@ export default function RestaurantFeature({ searchQuery, onClearSearch }: Restau
 
   const { data: allFoods, isLoading: isLoadingAll, isError: isErrorAll } = useGetFoodsQuery(undefined, {
     skip: !!searchQuery,
+    refetchOnFocus: true,
   });
   
   const { data: searchResults, isLoading: isLoadingSearch, isError: isErrorSearch } = useSearchFoodsQuery(searchQuery || "", {
     skip: !searchQuery,
+    refetchOnFocus: true,
   });
 
   const foods = searchQuery ? searchResults : allFoods;
   const isLoading = searchQuery ? isLoadingSearch : isLoadingAll;
   const isError = searchQuery ? isErrorSearch : isErrorAll;
 
-  const foodItems: FoodItem[] = (foods || []).map((food) => {
-    const foodInfo = getFoodInfo(food);
-    const restaurant = getRestaurantInfo(food);
-    
-    return {
-      id: food.id || "",
-      name: foodInfo.name,
-      price: parseFloat(foodInfo.price.replace("$", "")) || 0,
-      image: foodInfo.image,
-      brand: restaurant.name,
-      rating: foodInfo.rating,
-      brandColor: "text-white",
-      brandBg: "bg-blue-600",
-      isOpen: restaurant.status?.toLowerCase().includes("open") || false,
-    };
-  });
+  const foodItems: FoodItem[] = useMemo(() => {
+    return (foods || []).map((food) => {
+      const foodInfo = getFoodInfo(food);
+      const restaurant = getRestaurantInfo(food);
+      
+      return {
+        id: food.id || "",
+        name: foodInfo.name,
+        price: parseFloat(foodInfo.price.replace("$", "")) || 0,
+        image: foodInfo.image,
+        brand: restaurant.name,
+        rating: foodInfo.rating,
+        brandColor: "text-white",
+        brandBg: "bg-blue-600",
+        isOpen: restaurant.status?.toLowerCase().includes("open") || false,
+      };
+    });
+  }, [foods]);
 
   const displayedFoods = foodItems.slice(0, showCount);
 
-  const handleLoadMore = () => {
+  const handleLoadMore = useCallback(() => {
     setShowCount((prev) => prev + 4);
-  };
+  }, []);
 
   if (isLoading) {
     return (
