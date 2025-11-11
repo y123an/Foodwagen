@@ -6,5 +6,4 @@ export { default as FoodFormModal } from "./food-form-modal";
 export { default as FoodDeleteModal } from "./food-delete-modal";
 export { default as Toast } from "./toast";
 export { default as ToastContainer } from "./toast-container";
-export type { FoodFormValues } from "./food-form-modal";
-export type { ToastType, ToastProps } from "./toast";
+
