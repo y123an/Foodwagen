@@ -24,8 +24,6 @@
 13. Coding Standards & Linting
 14. Troubleshooting Guide
 15. FAQ
-16. Contributing
-17. License
 
 ---
 
