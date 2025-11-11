@@ -8,10 +8,13 @@ import Button from "./ui/button";
 const listBase = "space-y-3 text-sm text-gray-300";
 const headingBase = "text-white text-base font-semibold mb-5";
 
+/**
+ * Restaurant Footer Component
+ * Displays site footer with navigation links, social media, and newsletter subscription
+ */
 const RestaurantFooter: React.FC = () => {
-
   return (
-    <footer className="bg-[#1F1F1F] text-gray-300" aria-labelledby="site-footer">
+    <footer className="bg-footer-bg text-gray-300" aria-labelledby="site-footer">
       <h2 id="site-footer" className="sr-only">Site footer</h2>
       <div className="mx-auto md:max-w-7xl px-4 md:px-0 py-16">
         <div className="grid grid-cols-1 gap-y-12 lg:grid-cols-4 lg:gap-8">
@@ -47,13 +50,13 @@ const RestaurantFooter: React.FC = () => {
           <div className="lg:pl-10">
             <p className="text-white font-semibold mb-5">FOLLOW US</p>
             <div className="flex items-center gap-4 mb-8 text-gray-100">
-              <a aria-label="Instagram" href="#" className="w-9 h-9 rounded-full bg-[#2A2A2A] flex items-center justify-center hover:bg-[#333]">
+              <a aria-label="Instagram" href="#" className="w-9 h-9 rounded-full bg-footer-icon-bg flex items-center justify-center hover:bg-footer-icon-hover">
                 <FaInstagram />
               </a>
-              <a aria-label="Facebook" href="#" className="w-9 h-9 rounded-full bg-[#2A2A2A] flex items-center justify-center hover:bg-[#333]">
+              <a aria-label="Facebook" href="#" className="w-9 h-9 rounded-full bg-footer-icon-bg flex items-center justify-center hover:bg-footer-icon-hover">
                 <FaFacebookF />
               </a>
-              <a aria-label="Twitter" href="#" className="w-9 h-9 rounded-full bg-[#2A2A2A] flex items-center justify-center hover:bg-[#333]">
+              <a aria-label="Twitter" href="#" className="w-9 h-9 rounded-full bg-footer-icon-bg flex items-center justify-center hover:bg-footer-icon-hover">
                 <FaTwitter />
               </a>
             </div>
@@ -68,13 +71,13 @@ const RestaurantFooter: React.FC = () => {
                   type="email"
                   required
                   placeholder="Enter Your email"
-                  className="pl-9 h-12 bg-[#2A2A2A] border-0 text-gray-100 placeholder:text-gray-400"
+                  className="pl-9 h-12 bg-footer-icon-bg border-0 text-gray-100 placeholder:text-gray-400"
                   aria-label="Email address"
                 />
               </div>
               <Button
                 type="submit"
-                className="h-12 px-6 shadow-[0_20px_45px_-15px_rgba(255,154,14,0.6)]"
+                className="h-12 px-6 shadow-lg"
                 aria-label="Subscribe"
               >
                 Subscribe

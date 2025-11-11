@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Source_Sans_3 } from "next/font/google";
 import "./globals.css";
 import RestaurantFooter from "@/components/RestaurantFooter";
+import { ReduxProvider } from "@/lib/redux/ReduxProvider";
+import RestaurantNavbar from "@/components/RestaurantNavbar";
+import { ToastProvider } from "@/lib/context/ToastContext";
 
 
 const geistSans = Geist({
@@ -34,8 +37,13 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${sourceSans.variable} antialiased`}
       >
-        {children}
-        <RestaurantFooter />
+        <ReduxProvider>
+          <ToastProvider>
+            <RestaurantNavbar />
+            {children}
+            <RestaurantFooter />
+          </ToastProvider>
+        </ReduxProvider>
       </body>
     </html>
   );

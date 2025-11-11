@@ -1,12 +1,40 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Logo } from "@/assets";
 import Image from "next/image";
 import Button from "@/components/ui/button"; 
+import FoodFormModal, { FoodFormValues } from "@/components/ui/food-form-modal";
+import { useCreateFoodMutation } from "@/lib";
+import { useToast } from "@/lib/context/ToastContext";
 
-
+/**
+ * Restaurant Navbar Component
+ * Provides navigation header with logo and add food functionality
+ */
 export default function RestaurantNavbar() {
+  const [openCreate, setOpenCreate] = useState(false);
+  const [createFood, { isLoading: isCreating }] = useCreateFoodMutation();
+  const { showSuccess, showError } = useToast();
+
+  const handleCreateFood = async (values: Required<FoodFormValues>) => {
+    try {
+      const payload = {
+        name: values.name,
+        image: values.imageUrl,
+        Price: values.price,
+        rating: Number(values.rating),
+        restaurantName: values.restaurantName,
+        logo: values.logo,
+        status: values.status,
+      };
+      await createFood(payload).unwrap();
+      showSuccess("Food item created successfully!");
+      setOpenCreate(false);
+    } catch (error) {
+      showError("Failed to create food item");
+    }
+  };
 
   return (
     <>
@@ -19,12 +47,20 @@ export default function RestaurantNavbar() {
             </div>
           </div>
           <div>
-            <Button className="px-5">
-              Add Meal
+            <Button className="px-5" onClick={() => setOpenCreate(true)}>
+              Add Food
             </Button>
           </div>
         </div>
       </nav>
+
+      <FoodFormModal
+        open={openCreate}
+        mode="create"
+        onClose={() => setOpenCreate(false)}
+        submitting={isCreating}
+        onSubmit={handleCreateFood}
+      />
     </>
   );
 }

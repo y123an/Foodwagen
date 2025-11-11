@@ -5,7 +5,6 @@ import RestaurantFeature from "@/components/RestaurantFeature";
 function page() {
   return (
     <>
-      <RestaurantNavbar />
       <RestaurantHero />
       <RestaurantFeature />
     </>

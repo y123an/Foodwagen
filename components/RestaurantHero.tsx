@@ -7,6 +7,10 @@ import Image from "next/image";
 import { HeroImage, DeliveryIcon, PickupIcon } from "@/assets";
 import { cn } from "@/lib/utils";
 
+/**
+ * Restaurant Hero Component
+ * Displays the main hero section with food search functionality and delivery/pickup mode toggle
+ */
 export default function RestaurantHero() {
   const [mode, setMode] = useState<"delivery" | "pickup">("delivery");
 
@@ -48,7 +52,7 @@ export default function RestaurantHero() {
                 className="flex-1 border-none bg-gray-100"
               />
               <Button className="bg-secondary hover:bg-secondary/80 text-white">
-                Find Meal
+                Find Food
               </Button>
             </div>
           </div>

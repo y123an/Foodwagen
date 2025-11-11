@@ -1,5 +1,6 @@
 import * as React from "react";
 import { cn } from "@/lib/utils";
+import { FaSpinner } from "react-icons/fa";
 
 type Size = "sm" | "default" | "lg" | "icon";
 
@@ -7,6 +8,8 @@ export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   size?: Size;
   className?: string;
+  loading?: boolean;
+  loadingText?: string;
 }
 
 const sizeClasses: Record<Size, string> = {
@@ -23,12 +26,21 @@ const primaryClasses =
   "bg-gradient-to-r from-[#FF9A0E] to-[#FFBA26] text-white shadow-[0_10px_15px_-3px_#FFAE004A,0_4px_6px_-2px_#FFAE0042] hover:opacity-90";
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, size = "default", children, ...props }, ref) => {
+  ({ className, size = "default", children, loading, loadingText, disabled, ...props }, ref) => {
     const classes = cn(baseClasses, sizeClasses[size], primaryClasses, className);
 
     return (
-      <button ref={ref} className={classes} {...props}>
-        {children}
+      <button
+        ref={ref}
+        className={classes}
+        aria-busy={loading || undefined}
+        disabled={disabled || loading}
+        {...props}
+      >
+        {loading && (
+          <FaSpinner className="animate-spin -ml-1 mr-1 h-4 w-4 text-white" aria-hidden="true" />
+        )}
+        {loading ? loadingText ?? children : children}
       </button>
     );
   }

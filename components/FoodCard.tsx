@@ -1,14 +1,20 @@
 "use client";
 
 import { memo, useEffect, useRef, useState } from "react";
-import Button from "./ui/button";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { GoKebabHorizontal } from "react-icons/go";
 import { FaTag } from "react-icons/fa";
 import ActionMenu from "./ui/action-menu";
+import FoodFormModal from "./ui/food-form-modal";
+import type { FoodFormValues } from "./ui/food-form-modal";
+import FoodDeleteModal from "./ui/food-delete-modal";
+import { useUpdateFoodMutation, useDeleteFoodMutation } from "@/lib/redux/services/foodApi";
+import type { Food } from "@/lib/validations/food.schema"; 
+import { DefaultRestorantLogo, DefaultFoodImage } from "@/assets";
+import { useToast } from "@/lib/context/ToastContext";
 
-interface Meal {
+interface FoodItem {
   id: string;
   name: string;
   price: number;
@@ -17,23 +23,34 @@ interface Meal {
   rating: number;
   brandColor?: string;
   brandBg?: string;
+  logo?: string;
   isOpen?: boolean;
 }
 
 type FoodCardProps = {
-  meal: Meal;
-  onEdit?: (meal: Meal) => void;
-  onDelete?: (meal: Meal) => void;
+  food: FoodItem;
+  foodData?: Food;
 };
 
+/**
+ * Food Card Component
+ * Displays a food item with image, price, rating, and action menu for edit/delete
+ */
 const FoodCard = memo(function FoodCard({
-  meal,
-  onEdit,
-  onDelete,
+  food,
+  foodData,
 }: FoodCardProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement | null>(null);
   const btnRef = useRef<HTMLButtonElement | null>(null);
+  const [openEdit, setOpenEdit] = useState(false);
+  const [openDelete, setOpenDelete] = useState(false);
+  const [logoSrc, setLogoSrc] = useState(foodData?.logo || DefaultRestorantLogo);
+  const [imageSrc, setImageSrc] = useState(food.image || DefaultFoodImage);
+  const { showSuccess, showError } = useToast();
+
+  const [updateFood, { isLoading: isUpdating }] = useUpdateFoodMutation();
+  const [deleteFood, { isLoading: isDeleting }] = useDeleteFoodMutation();
 
   useEffect(() => {
     if (!menuOpen) return;
@@ -60,42 +77,45 @@ const FoodCard = memo(function FoodCard({
   }, [menuOpen]);
 
   return (
-    <article
+    <>
+      <article
       className="group relative bg-white flex flex-col gap-3"
-      aria-label={meal.name}
+      aria-label={food.name}
     >
       <div className="relative aspect-4/3 w-full overflow-hidden rounded-2xl">
         <Image
-          src={meal.image}
-          alt={meal.name}
+          src={imageSrc}
+          alt={food.name}
           className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
           loading="lazy"
           width={350}
           height={262}
+          onError={() => setImageSrc(DefaultFoodImage)}
         />
-        <span className="absolute top-3 left-3 rounded-sm flex gap-1 items-center bg-linear-to-r from-[#FF9A0E] to-[#FFBA26] px-2 py-1 text-xs font-semibold text-white shadow-md">
-          <FaTag className="text-white" />${meal.price.toFixed(2)}
+        <span className="absolute top-3 left-3 rounded-sm flex gap-1 items-center bg-linear-to-r from-primary to-primary-light px-2 py-1 text-xs font-semibold text-white shadow-md">
+          <FaTag className="text-white" />${food.price.toFixed(2)}
         </span>
       </div>
       <div className="flex flex-col gap-2 flex-1">
         <div className="flex items-start justify-between gap-2">
           <div className="flex gap-3 items-center">
-            <span
-              className={cn(
-                "inline-block w-fit rounded-sm px-2 py-1 text-[10px] font-semibold tracking-wide shadow",
-                meal.brandBg,
-                meal.brandColor
-              )}
-            >
-              {meal.brand}
+            <span>
+              <Image
+                src={logoSrc}
+                alt={food.brand}
+                width={64}
+                height={64}
+                onError={() => setLogoSrc(DefaultRestorantLogo)}
+                className="object-cover w-12 h-12 rounded-md"
+              />
             </span>
             <div>
               <h3 className="text-sm font-semibold text-gray-800 leading-snug">
-                {meal.name}
+                {food.name}
               </h3>
               <div className="flex items-center gap-1" aria-label="Rating">
                 <span className="ml-1 text-xs font-medium text-gray-600">
-                  {meal.rating.toFixed(1)}
+                  {food.rating.toFixed(1)}
                 </span>
               </div>
             </div>
@@ -116,39 +136,88 @@ const FoodCard = memo(function FoodCard({
                 ref={menuRef}
                 onEdit={() => {
                   setMenuOpen(false);
-                  if (onEdit) onEdit(meal);
-                  else console.log("Edit", meal);
+                  setOpenEdit(true);
                 }}
                 onDelete={() => {
                   setMenuOpen(false);
-                  if (onDelete) onDelete(meal);
-                  else console.log("Delete", meal);
+                  setOpenDelete(true);
                 }}
               />
             )}
           </div>
         </div>
         <div className="mt-auto flex">
-          {/* <Button
-            size="sm"
-            className="w-full bg-linear-to-r from-[#FF9A0E] to-[#FFBA26] text-white hover:opacity-90"
-          >
-            Order Now
-          </Button> */}
           <span
-            aria-label={`Status: ${meal.isOpen ? "Open" : "Closed"}`}
+            aria-label={`Status: ${food.isOpen ? "Open" : "Closed"}`}
             className={cn(
               "inline-block rounded-md px-2 py-1 text-center text-xs font-semibold tracking-wide",
-              meal.isOpen
-                ? "bg-green-100 text-green-700 border border-green-200"
-                : "bg-red-100 text-red-700 border border-red-200"
+              food.isOpen
+                ? "bg-success-light text-success-dark border border-success"
+                : "bg-error-light text-error-dark border border-error"
             )}
           >
-            {meal.isOpen ? "Open" : "Closed"}
+            {food.isOpen ? "Open" : "Closed"}
           </span>
         </div>
       </div>
     </article>
+
+    <FoodFormModal
+      open={openEdit}
+      mode="edit"
+      initialData={{
+        name: food.name,
+        rating: food.rating,
+        imageUrl: food.image,
+        price: food.price.toString(),
+        restaurantName: food.brand,
+        logo: foodData?.logo || foodData?.restaurant_logo || "",
+        status: (food.isOpen ? "Open Now" : "Closed") as "Open Now" | "Closed",
+      }}
+      onClose={() => setOpenEdit(false)}
+      submitting={isUpdating}
+      onSubmit={async (values: Required<FoodFormValues>) => {
+        try {
+          if (foodData?.id) {
+            await updateFood({
+              id: foodData.id,
+              data: {
+                name: values.name,
+                image: values.imageUrl,
+                Price: values.price,
+                rating: Number(values.rating),
+                restaurantName: values.restaurantName,
+                logo: values.logo,
+                status: values.status,
+              },
+            }).unwrap();
+            showSuccess("Food item updated successfully!");
+          }
+          setOpenEdit(false);
+        } catch (error) {
+          showError("Failed to update food item");
+        }
+      }}
+    />
+
+    <FoodDeleteModal
+      open={openDelete}
+      onClose={() => setOpenDelete(false)}
+      foodName={food.name}
+      confirming={isDeleting}
+      onConfirm={async () => {
+        try {
+          if (foodData?.id) {
+            await deleteFood(foodData.id).unwrap();
+            showSuccess("Food item deleted successfully!");
+          }
+          setOpenDelete(false);
+        } catch (error) {
+          showError("Failed to delete food item");
+        }
+      }}
+    />
+    </>
   );
 });
 
