@@ -3,7 +3,7 @@
 import React, { useMemo, useState, useEffect } from "react";
 import Modal from "./modal";
 import Input from "./input";
-import Button from "./button";
+import Button from "@/components/ui/button";
 import type { FoodFormModalProps, FoodFormValues, FoodStatus } from "@/lib/types";
 import { useToast } from "@/lib/context/ToastContext";
 

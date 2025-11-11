@@ -2,7 +2,7 @@
 
 import React from "react";
 import Modal from "./modal";
-import Button from "./button";
+import Button from "@/components/ui/button";
 import type { FoodDeleteModalProps } from "@/lib/types";
 import { useToast } from "@/lib/context/ToastContext";
 

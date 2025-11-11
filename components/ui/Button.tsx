@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import { FaSpinner } from "react-icons/fa";
 import type { ButtonSize } from "@/lib/types";
 
-export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   size?: ButtonSize;
   className?: string;
   loading?: boolean;
