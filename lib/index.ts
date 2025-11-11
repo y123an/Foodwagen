@@ -1,10 +1,5 @@
-// Export types from Zod schemas
-export type {
-  Food,
-  CreateFood,
-  UpdateFood,
-  Restaurant,
-} from "@/lib/validations/food.schema";
+// Export all types from centralized types module
+export type * from "./types";
 
 // Export Redux hooks
 export { useAppDispatch, useAppSelector } from "./redux/hooks";

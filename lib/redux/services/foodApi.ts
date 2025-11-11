@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { Food, CreateFood, UpdateFood, foodSchema } from "@/lib/validations/food.schema";
+import { foodSchema } from "@/lib/validations/food.schema";
+import type { Food, CreateFood, UpdateFood } from "@/lib/types";
 
 const API_BASE_URL = "https://6852821e0594059b23cdd834.mockapi.io";
 

@@ -2,22 +2,7 @@
 
 import React, { createContext, useContext, useState, useCallback } from "react";
 import ToastContainer from "@/components/ui/toast-container";
-import type { ToastType } from "@/components/ui/toast";
-
-interface Toast {
-  id: string;
-  type: ToastType;
-  message: string;
-  duration?: number;
-}
-
-interface ToastContextValue {
-  showToast: (type: ToastType, message: string, duration?: number) => void;
-  showSuccess: (message: string, duration?: number) => void;
-  showError: (message: string, duration?: number) => void;
-  showWarning: (message: string, duration?: number) => void;
-  showInfo: (message: string, duration?: number) => void;
-}
+import type { Toast, ToastContextValue, ToastType } from "@/lib/types";
 
 const ToastContext = createContext<ToastContextValue | undefined>(undefined);
 

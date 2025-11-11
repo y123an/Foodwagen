@@ -7,30 +7,11 @@ import { GoKebabHorizontal } from "react-icons/go";
 import { FaTag } from "react-icons/fa";
 import ActionMenu from "./ui/action-menu";
 import FoodFormModal from "./ui/food-form-modal";
-import type { FoodFormValues } from "./ui/food-form-modal";
 import FoodDeleteModal from "./ui/food-delete-modal";
 import { useUpdateFoodMutation, useDeleteFoodMutation } from "@/lib/redux/services/foodApi";
-import type { Food } from "@/lib/validations/food.schema"; 
 import { DefaultRestorantLogo, DefaultFoodImage } from "@/assets";
 import { useToast } from "@/lib/context/ToastContext";
-
-interface FoodItem {
-  id: string;
-  name: string;
-  price: number;
-  image: string;
-  brand: string;
-  rating: number;
-  brandColor?: string;
-  brandBg?: string;
-  logo?: string;
-  isOpen?: boolean;
-}
-
-type FoodCardProps = {
-  food: FoodItem;
-  foodData?: Food;
-};
+import type { FoodCardProps, FoodFormValues } from "@/lib/types";
 
 /**
  * Food Card Component

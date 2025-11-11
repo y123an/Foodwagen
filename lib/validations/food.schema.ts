@@ -60,7 +60,5 @@ export const createFoodSchema = z.object({
  */
 export const updateFoodSchema = createFoodSchema.partial();
 
-export type Food = z.infer<typeof foodSchema>;
-export type CreateFood = z.infer<typeof createFoodSchema>;
-export type UpdateFood = z.infer<typeof updateFoodSchema>;
-export type Restaurant = z.infer<typeof restaurantSchema>;
+// Re-export types from centralized types module
+export type { Food, CreateFood, UpdateFood, Restaurant } from "@/lib/types";
