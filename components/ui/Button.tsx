@@ -3,8 +3,7 @@ import { cn } from "@/lib/utils";
 import { FaSpinner } from "react-icons/fa";
 import type { ButtonSize } from "@/lib/types";
 
-export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   size?: ButtonSize;
   className?: string;
   loading?: boolean;
@@ -24,7 +23,7 @@ const baseClasses =
 const primaryClasses =
   "bg-gradient-to-r from-[#FF9A0E] to-[#FFBA26] text-white shadow-[0_10px_15px_-3px_#FFAE004A,0_4px_6px_-2px_#FFAE0042] hover:opacity-90";
 
-export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, size = "default", children, loading, loadingText, disabled, ...props }, ref) => {
     const classes = cn(baseClasses, sizeClasses[size], primaryClasses, className);
 
