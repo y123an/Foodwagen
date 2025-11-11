@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Source_Sans_3 } from "next/font/google";
 import "./globals.css";
+import RestaurantFooter from "@/components/RestaurantFooter";
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,6 +35,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${sourceSans.variable} antialiased`}
       >
         {children}
+        <RestaurantFooter />
       </body>
     </html>
   );

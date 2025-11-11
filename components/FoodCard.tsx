@@ -1,26 +1,67 @@
-import { memo } from "react";
+"use client";
+
+import { memo, useEffect, useRef, useState } from "react";
 import Button from "./ui/button";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { GoKebabHorizontal } from "react-icons/go";
 import { FaTag } from "react-icons/fa";
+import ActionMenu from "./ui/action-menu";
 
 interface Meal {
   id: string;
   name: string;
   price: number;
-  image: string; 
-  brand: string; 
+  image: string;
+  brand: string;
   rating: number;
-  brandColor?: string; 
+  brandColor?: string;
   brandBg?: string;
   isOpen?: boolean;
 }
 
-const FoodCard = memo(function FoodCard({ meal }: { meal: Meal }) {
+type FoodCardProps = {
+  meal: Meal;
+  onEdit?: (meal: Meal) => void;
+  onDelete?: (meal: Meal) => void;
+};
+
+const FoodCard = memo(function FoodCard({
+  meal,
+  onEdit,
+  onDelete,
+}: FoodCardProps) {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement | null>(null);
+  const btnRef = useRef<HTMLButtonElement | null>(null);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onDocClick = (e: MouseEvent) => {
+      const target = e.target as Node | null;
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(target) &&
+        btnRef.current &&
+        !btnRef.current.contains(target)
+      ) {
+        setMenuOpen(false);
+      }
+    };
+    const onEsc = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMenuOpen(false);
+    };
+    document.addEventListener("mousedown", onDocClick);
+    document.addEventListener("keydown", onEsc);
+    return () => {
+      document.removeEventListener("mousedown", onDocClick);
+      document.removeEventListener("keydown", onEsc);
+    };
+  }, [menuOpen]);
+
   return (
     <article
-      className="group relative bg-white overflow-hidden flex flex-col gap-3"
+      className="group relative bg-white flex flex-col gap-3"
       aria-label={meal.name}
     >
       <div className="relative aspect-4/3 w-full overflow-hidden rounded-2xl">
@@ -33,8 +74,7 @@ const FoodCard = memo(function FoodCard({ meal }: { meal: Meal }) {
           height={262}
         />
         <span className="absolute top-3 left-3 rounded-sm flex gap-1 items-center bg-linear-to-r from-[#FF9A0E] to-[#FFBA26] px-2 py-1 text-xs font-semibold text-white shadow-md">
-            <FaTag className="text-white" />
-          ${meal.price.toFixed(2)}
+          <FaTag className="text-white" />${meal.price.toFixed(2)}
         </span>
       </div>
       <div className="flex flex-col gap-2 flex-1">
@@ -60,9 +100,33 @@ const FoodCard = memo(function FoodCard({ meal }: { meal: Meal }) {
               </div>
             </div>
           </div>
-          <button>
-            <GoKebabHorizontal className="rotate-90 text-black" />
-          </button>
+          <div className="relative">
+            <button
+              ref={btnRef}
+              aria-haspopup="menu"
+              aria-expanded={menuOpen}
+              onClick={() => setMenuOpen((v) => !v)}
+              className="p-1 rounded-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300"
+            >
+              <GoKebabHorizontal className="rotate-90 text-black" />
+            </button>
+
+            {menuOpen && (
+              <ActionMenu
+                ref={menuRef}
+                onEdit={() => {
+                  setMenuOpen(false);
+                  if (onEdit) onEdit(meal);
+                  else console.log("Edit", meal);
+                }}
+                onDelete={() => {
+                  setMenuOpen(false);
+                  if (onDelete) onDelete(meal);
+                  else console.log("Delete", meal);
+                }}
+              />
+            )}
+          </div>
         </div>
         <div className="mt-auto flex">
           {/* <Button
