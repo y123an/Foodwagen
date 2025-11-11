@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { motion } from "framer-motion";
 import Input from "@/components/ui/input";
 import Button from "@/components/ui/button";
 import Image from "next/image";
@@ -46,14 +47,45 @@ export default function RestaurantHero({ onSearch, onClearSearch }: RestaurantHe
   };
 
   return (
-    <section className="bg-primary py-8 md:py-16 px-4 md:px-8 lg:px-16">
-      <div className="max-w-7xl mx-auto md:flex md:items-center md:gap-12 lg:gap-36">
-        <div className="flex-1 text-white">
-          <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold">Are you starving?</h1>
-          <p className="text-base md:text-lg mt-2 font-light text-white/90">
+    <motion.section
+      className="bg-primary py-8 md:py-16 px-4 md:px-8 lg:px-16 will-change-transform"
+      initial={{ opacity: 0, y: 32 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, ease: "easeOut" }}
+    >
+      <motion.div
+        className="max-w-7xl mx-auto md:flex md:items-center md:gap-12 lg:gap-36"
+        initial="hidden"
+        animate="show"
+        variants={{
+          hidden: {},
+          show: { transition: { staggerChildren: 0.06 } }
+        }}
+      >
+        <motion.div
+          className="flex-1 text-white"
+          variants={{ hidden: { opacity: 0, y: 24 }, show: { opacity: 1, y: 0 } }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
+        >
+          <motion.h1
+            className="text-4xl md:text-5xl lg:text-7xl font-bold"
+            variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+          >
+            Are you starving?
+          </motion.h1>
+          <motion.p
+            className="text-base md:text-lg mt-2 font-light text-white/90"
+            variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+          >
             Within a few clicks, find meals that are accessible near you
-          </p>
-          <div className="mt-6 bg-white rounded-xl md:rounded-2xl shadow-md p-4 md:p-6">
+          </motion.p>
+          <motion.div
+            className="mt-6 bg-white rounded-xl md:rounded-2xl shadow-md p-4 md:p-6"
+            variants={{ hidden: { opacity: 0, y: 20 }, show: { opacity: 1, y: 0 } }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+          >
             <div className="flex space-x-2 rounded-full p-1 mb-4">
               {(["delivery", "pickup"] as const).map((item) => (
                 <button
@@ -105,16 +137,20 @@ export default function RestaurantHero({ onSearch, onClearSearch }: RestaurantHe
                 <span className="hidden sm:inline">Find Meal</span>
               </Button>
             </div>
-          </div>
-        </div>
-        <div className="hidden md:block shrink-0 relative top-16">
+          </motion.div>
+        </motion.div>
+        <motion.div
+          className="hidden md:block shrink-0 relative top-16"
+          variants={{ hidden: { opacity: 0, y: 32 }, show: { opacity: 1, y: 0 } }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
+        >
           <Image
             src={HeroImage}
             alt="Food hero image"
             className="w-[300px] h-[300px] lg:w-[400px] lg:h-[400px] food-hero-image-shadow"
           />
-        </div>
-      </div>
-    </section>
+        </motion.div>
+      </motion.div>
+    </motion.section>
   );
 }

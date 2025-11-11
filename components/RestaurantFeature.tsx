@@ -96,10 +96,9 @@ export default function RestaurantFeature({ searchQuery, onClearSearch }: Restau
     );
   }
 
-  // Empty state when no foods at all (not search related)
   if (!searchQuery && foods && foods.length === 0) {
     return (
-      <section id="featured-foods-section" className="w-full py-8 md:py-12 lg:py-16 bg-white">
+      <section id="featured-foods-section" className="empty-state-message w-full py-8 md:py-12 lg:py-16 bg-white">
         <div className="mx-auto w-full max-w-7xl px-4 md:px-6 lg:px-8">
           <div className="flex flex-col items-center justify-center py-8 md:py-12 lg:py-16">
             <div className="mb-4 md:mb-6 text-6xl md:text-7xl lg:text-8xl">🍽️</div>
@@ -117,7 +116,7 @@ export default function RestaurantFeature({ searchQuery, onClearSearch }: Restau
 
   if ((searchQuery && (!foods || foods.length === 0)) || (isError && searchQuery)) {
     return (
-      <section id="featured-foods-section" className="w-full py-8 md:py-12 lg:py-16 bg-white">
+      <section id="featured-foods-section" className="empty-state-message w-full py-8 md:py-12 lg:py-16 bg-white">
         <div className="mx-auto w-full max-w-7xl px-4 md:px-6 lg:px-8">
           <div className="flex flex-col items-center justify-center py-8 md:py-12">
             <div className="mb-6 md:mb-8 text-gray-300">

@@ -254,6 +254,9 @@ export default function FoodFormModal({
             value={values.logo}
             onChange={(e) => handleChange("logo", e.target.value)}
           />
+          {hasError("logo") && (
+            <p className={errorText} id="restaurant_logo-error">{errors.logo}</p>
+          )}
         </div>
 
         <div className={fieldWrap}>

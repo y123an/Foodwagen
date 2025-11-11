@@ -1,6 +1,7 @@
 "use client";
 
 import { memo, useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { GoKebabHorizontal } from "react-icons/go";
@@ -58,12 +59,30 @@ const FoodCard = memo(function FoodCard({
     };
   }, [menuOpen]);
 
+  useEffect(() => {
+    const next = food.image || DefaultFoodImage;
+    if (next !== imageSrc) setImageSrc(next);
+  }, [food.image]);
+
+  useEffect(() => {
+    if (!foodData) return;
+    const logo: string | undefined = (foodData as { logo?: string; restaurant_logo?: string }).logo ||
+      (foodData as { logo?: string; restaurant_logo?: string }).restaurant_logo;
+    const nextLogo = logo || DefaultRestorantLogo;
+    if (nextLogo !== logoSrc) setLogoSrc(nextLogo);
+  }, [foodData]);
+
   return (
     <>
-      <article
+      <motion.article
       data-test-id="food-card"
-      className="group relative bg-white flex flex-col gap-2 md:gap-3"
+      className="group relative bg-white flex flex-col gap-2 md:gap-3 will-change-transform"
       aria-label={food.name}
+      initial={{ opacity: 0, y: 24 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, ease: "easeOut" }}
+      whileHover={{ y: -4 }}
+      whileTap={{ scale: 0.98 }}
     >
       <div className="relative aspect-4/3 w-full overflow-hidden rounded-xl md:rounded-2xl">
         <Image
@@ -99,9 +118,14 @@ const FoodCard = memo(function FoodCard({
                 {food.name}
               </h3>
               <div className="flex items-center gap-1" aria-label="Rating">
-                <span data-test-id="food-rating" className="ml-1 flex items-center gap-1 text-xs font-medium text-gray-600">
-                  <BsStarFill className="text-yellow-400"/> {food.rating.toFixed(1)}
-                </span>
+                {(() => {
+                  const numericRating = typeof food.rating === 'number' ? food.rating : parseFloat(String(food.rating)) || 0;
+                  return (
+                    <span data-test-id="food-rating" className="ml-1 flex items-center gap-1 text-xs font-medium text-gray-600">
+                      <BsStarFill className="text-yellow-400"/> {numericRating.toFixed(1)}
+                    </span>
+                  );
+                })()}
               </div>
             </div>
           </div>
@@ -147,7 +171,7 @@ const FoodCard = memo(function FoodCard({
           </span>
         </div>
       </div>
-    </article>
+  </motion.article>
 
     <FoodFormModal
       open={openEdit}
@@ -178,6 +202,16 @@ const FoodCard = memo(function FoodCard({
                 status: values.status,
               },
             }).unwrap();
+            // Force-refresh images immediately even if the URL stays the same (browser cache)
+            const cb = Date.now();
+            if (values.imageUrl) {
+              const joiner = values.imageUrl.includes("?") ? "&" : "?";
+              setImageSrc(`${values.imageUrl}${joiner}cb=${cb}`);
+            }
+            if (values.logo) {
+              const joiner = values.logo.includes("?") ? "&" : "?";
+              setLogoSrc(`${values.logo}${joiner}cb=${cb}`);
+            }
             showSuccess("Food item updated successfully!");
           }
           setOpenEdit(false);
