@@ -14,6 +14,7 @@ const ActionMenu = forwardRef<HTMLDivElement, ActionMenuProps>(
     return (
       <div
         ref={ref}
+        data-test-id="food-action-menu"
         role="menu"
         aria-label="Actions"
         className={cn(
@@ -22,6 +23,7 @@ const ActionMenu = forwardRef<HTMLDivElement, ActionMenuProps>(
         )}
       >
         <button
+          data-test-id="food-edit-btn"
           role="menuitem"
           className="block w-full rounded px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 text-left"
           onClick={onEdit}
@@ -29,6 +31,7 @@ const ActionMenu = forwardRef<HTMLDivElement, ActionMenuProps>(
           Edit
         </button>
         <button
+          data-test-id="food-delete-btn"
           role="menuitem"
           className="mt-1 block w-full rounded px-2 py-1 text-sm text-red-600 hover:bg-red-50 text-left"
           onClick={onDelete}

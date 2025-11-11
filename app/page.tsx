@@ -4,7 +4,7 @@ import { useState } from "react";
 import RestaurantHero from "@/components/RestaurantHero";
 import RestaurantFeature from "@/components/RestaurantFeature";
 
-function page() {
+function HomePage() {
   const [searchQuery, setSearchQuery] = useState<string>("");
 
   const handleSearch = (query: string) => {
@@ -23,4 +23,4 @@ function page() {
   );
 }
 
-export default page;
+export default HomePage;

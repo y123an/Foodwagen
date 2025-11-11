@@ -12,6 +12,7 @@ import { useUpdateFoodMutation, useDeleteFoodMutation } from "@/lib/redux/servic
 import { DefaultRestorantLogo, DefaultFoodImage } from "@/assets";
 import { useToast } from "@/lib/context/ToastContext";
 import type { FoodCardProps, FoodFormValues } from "@/lib/types";
+import { BsStarFill } from "react-icons/bs";
 
 /**
  * Food Card Component
@@ -60,11 +61,13 @@ const FoodCard = memo(function FoodCard({
   return (
     <>
       <article
+      data-test-id="food-card"
       className="group relative bg-white flex flex-col gap-2 md:gap-3"
       aria-label={food.name}
     >
       <div className="relative aspect-4/3 w-full overflow-hidden rounded-xl md:rounded-2xl">
         <Image
+          data-test-id="food-image"
           src={imageSrc}
           alt={food.name}
           className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
@@ -73,7 +76,7 @@ const FoodCard = memo(function FoodCard({
           height={262}
           onError={() => setImageSrc(DefaultFoodImage)}
         />
-        <span className="absolute top-2 left-2 md:top-3 md:left-3 rounded-sm flex gap-1 items-center bg-linear-to-r from-primary to-primary-light px-2 py-1 text-xs font-semibold text-white shadow-md">
+        <span data-test-id="food-price" className="absolute top-2 left-2 md:top-3 md:left-3 rounded-sm flex gap-1 items-center bg-linear-to-r from-primary to-primary-light px-2 py-1 text-xs font-semibold text-white shadow-md">
           <FaTag className="text-white w-2.5 h-2.5 md:w-3 md:h-3" />${food.price.toFixed(2)}
         </span>
       </div>
@@ -82,6 +85,7 @@ const FoodCard = memo(function FoodCard({
           <div className="flex gap-2 md:gap-3 items-center">
             <span>
               <Image
+                data-test-id="food-logo"
                 src={logoSrc}
                 alt={food.brand}
                 width={64}
@@ -91,18 +95,19 @@ const FoodCard = memo(function FoodCard({
               />
             </span>
             <div>
-              <h3 className="text-xs md:text-sm font-semibold text-gray-800 leading-snug">
+              <h3 data-test-id="food-name" className="text-xs md:text-sm font-semibold text-gray-800 leading-snug">
                 {food.name}
               </h3>
               <div className="flex items-center gap-1" aria-label="Rating">
-                <span className="ml-1 text-xs font-medium text-gray-600">
-                  {food.rating.toFixed(1)}
+                <span data-test-id="food-rating" className="ml-1 flex items-center gap-1 text-xs font-medium text-gray-600">
+                  <BsStarFill className="text-yellow-400"/> {food.rating.toFixed(1)}
                 </span>
               </div>
             </div>
           </div>
           <div className="relative">
             <button
+              data-test-id="food-menu-btn"
               ref={btnRef}
               aria-haspopup="menu"
               aria-expanded={menuOpen}
@@ -129,6 +134,7 @@ const FoodCard = memo(function FoodCard({
         </div>
         <div className="mt-auto flex">
           <span
+            data-test-id="food-status"
             aria-label={`Status: ${food.isOpen ? "Open" : "Closed"}`}
             className={cn(
               "inline-block rounded-md px-2 py-1 text-center text-xs font-semibold tracking-wide",
@@ -175,7 +181,7 @@ const FoodCard = memo(function FoodCard({
             showSuccess("Food item updated successfully!");
           }
           setOpenEdit(false);
-        } catch (error) {
+        } catch {
           showError("Failed to update food item");
         }
       }}
@@ -193,7 +199,7 @@ const FoodCard = memo(function FoodCard({
             showSuccess("Food item deleted successfully!");
           }
           setOpenDelete(false);
-        } catch (error) {
+        } catch {
           showError("Failed to delete food item");
         }
       }}

@@ -5,6 +5,7 @@ import Modal from "./modal";
 import Input from "./input";
 import Button from "./button";
 import type { FoodFormModalProps, FoodFormValues, FoodStatus } from "@/lib/types";
+import { useToast } from "@/lib/context/ToastContext";
 
 const fieldWrap = "mb-4";
 const errorText = "mt-1 text-xs text-error";
@@ -33,7 +34,7 @@ export default function FoodFormModal({
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [touched, setTouched] = useState<Record<string, boolean>>({});
-
+  const { showError } = useToast();      
   useEffect(() => {
     if (open) {
       if (initialData) {
@@ -61,7 +62,7 @@ export default function FoodFormModal({
     }
   }, [open, initialData]);
 
-  const errors = useMemo(() => {
+  const errors = useMemo<Partial<Record<keyof FoodFormValues, string>>>(() => {
     const e: Partial<Record<keyof FoodFormValues, string>> = {};
     if (!values.name?.trim()) e.name = "Food name is required";
     if (!values.restaurantName?.trim()) e.restaurantName = "Restaurant name is required";
@@ -88,9 +89,9 @@ export default function FoodFormModal({
     return e;
   }, [values.name, values.restaurantName, values.rating, values.price, values.imageUrl, values.logo]);
 
-  const hasError = (k: keyof FoodFormValues) => Boolean(touched[k] && (errors as any)[k]);
+  const hasError = (k: keyof FoodFormValues) => Boolean(touched[k] && errors[k]);
 
-  const handleChange = (k: keyof FoodFormValues, v: any) =>
+  const handleChange = <K extends keyof FoodFormValues>(k: K, v: FoodFormValues[K]) =>
     setValues((s) => ({ ...s, [k]: v }));
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -124,6 +125,8 @@ export default function FoodFormModal({
     try {
       setIsSubmitting(true);
       await onSubmit(payload);
+    } catch {
+      showError("Failed to submit the form, please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -141,10 +144,11 @@ export default function FoodFormModal({
       size="lg"
       footer={
         <>
-          <Button type="submit" form="food-form" loading={submitting ?? isSubmitting} loadingText={loadingText}>
+          <Button data-test-id="food-form-submit-btn" type="submit" form="food-form" loading={submitting ?? isSubmitting} loadingText={loadingText}>
             {actionText}
           </Button>
           <button
+            data-test-id="food-form-cancel-btn"
             type="button"
             onClick={onClose}
             className="h-9 rounded-md border border-primary-light bg-white px-4 py-2 text-sm font-medium text-gray-800 shadow-sm transition-colors hover:bg-orange-50"
@@ -157,6 +161,7 @@ export default function FoodFormModal({
       <form id="food-form" onSubmit={handleSubmit} className="mt-2" aria-labelledby="food-form-title">
         <div className={fieldWrap}>
           <Input
+            data-test-id="food-form-name-input"
             id="food_name"
             name="food_name"
             placeholder="Enter food name"
@@ -170,13 +175,18 @@ export default function FoodFormModal({
 
         <div className={fieldWrap}>
           <Input
+            data-test-id="food-form-rating-input"
             id="food_rating"
             name="food_rating"
             type="number"
             step="0.1"
             placeholder="Food rating (1-5)"
-            value={values.rating as any}
-            onChange={(e) => handleChange("rating", e.target.value)}
+            value={values.rating ?? ""}
+            onChange={(e) => {
+              const val = e.target.value;
+              const n = Number(val);
+              handleChange("rating", val === "" || Number.isNaN(n) ? "" : n);
+            }}
             aria-invalid={hasError("rating") || undefined}
             aria-describedby={hasError("rating") ? "restaurant_rating-error" : undefined}
           />
@@ -187,11 +197,12 @@ export default function FoodFormModal({
 
         <div className={fieldWrap}>
           <Input
+            data-test-id="food-form-price-input"
             id="food_price"
             name="food_price"
             type="number"
             step="0.01"
-            placeholder="Food price (e.g., 12.99)"
+            placeholder="Food price ($) (e.g., 12.99)"
             value={values.price}
             onChange={(e) => handleChange("price", e.target.value)}
             aria-invalid={hasError("price") || undefined}
@@ -204,6 +215,7 @@ export default function FoodFormModal({
 
         <div className={fieldWrap}>
           <Input
+            data-test-id="food-form-image-input"
             id="food_image"
             name="food_image"
             placeholder="Food image URL (https://...)"
@@ -219,6 +231,7 @@ export default function FoodFormModal({
 
         <div className={fieldWrap}>
           <Input
+            data-test-id="food-form-restaurant-input"
             id="restaurant_name"
             name="restaurant_name"
             placeholder="Enter restaurant name"
@@ -234,6 +247,7 @@ export default function FoodFormModal({
 
         <div className={fieldWrap}>
           <Input
+            data-test-id="food-form-logo-input"
             id="restaurant_logo"
             name="restaurant_logo"
             placeholder="Restaurant logo URL (https://...)"
@@ -244,6 +258,7 @@ export default function FoodFormModal({
 
         <div className={fieldWrap}>
           <select
+            data-test-id="food-form-status-select"
             id="restaurant_status"
             name="restaurant_status"
             className="food-input flex h-9 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-error-dark focus-visible:ring-offset-2"

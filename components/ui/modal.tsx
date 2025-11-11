@@ -28,7 +28,6 @@ export default function Modal({
   hideClose,
   className,
   initialFocusRef,
-  closeOnOverlayClick = true,
   closeOnEsc = true,
 }: ModalProps) {
   const overlayRef = useRef<HTMLDivElement>(null);

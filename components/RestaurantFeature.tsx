@@ -127,7 +127,7 @@ export default function RestaurantFeature({ searchQuery, onClearSearch }: Restau
               No Food Found
             </h2>
             <p className="text-base md:text-lg text-gray-600 mb-2 text-center px-4">
-              We couldn't find any food matching <span className="font-semibold text-primary">"{searchQuery}"</span>
+              We couldn&apos;t find any food matching <span className="font-semibold text-primary">&quot;{searchQuery}&quot;</span>
             </p>
             <p className="text-xs md:text-sm text-gray-500 mb-6 md:mb-8 text-center px-4">
               Try searching with a different keyword or browse our featured foods below

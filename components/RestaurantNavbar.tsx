@@ -31,7 +31,7 @@ export default function RestaurantNavbar() {
       await createFood(payload).unwrap();
       showSuccess("Food item created successfully!");
       setOpenCreate(false);
-    } catch (error) {
+    } catch {
       showError("Failed to create food item");
     }
   };
